@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+# Change the Subscription details
+- target:
+    kind: OperatorPolicy
+    name: .*
+  patch: |-
+    - op: replace
+      path: /metadata/name
+      value: install-devspace
+    - op: replace
+      path: /spec/subscription/channel
+      value: stable
+    - op: replace
+      path: /spec/subscription/name
+      value: devspaces
+    - op: replace
+      path: /spec/subscription/namespace
+      value: openshift-devspaces
+    - op: replace
+      path: /spec/subscription/source
+      value: redhat-operators
+

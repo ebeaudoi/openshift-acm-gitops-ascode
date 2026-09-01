@@ -1,0 +1,14 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: localhost-gitops-placement
+  namespace: open-cluster-management-global-set
+placementRef:
+  name: global
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+  - name: localhost-gitops
+    kind: Policy
+    apiGroup: policy.open-cluster-management.io

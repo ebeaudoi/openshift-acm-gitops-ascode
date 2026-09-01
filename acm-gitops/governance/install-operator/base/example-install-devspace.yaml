@@ -1,0 +1,58 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: ebdn-install-devspace
+  namespace: acm-clusterset-allcluster
+  annotations:
+    policy.open-cluster-management.io/categories: ""
+    policy.open-cluster-management.io/standards: ""
+    policy.open-cluster-management.io/controls: ""
+spec:
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-devspaces
+        spec:
+          remediationAction: enforce
+          severity: critical
+          complianceType: musthave
+          subscription:
+            name: devspaces
+            namespace: openshift-devspaces
+            channel: stable
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+          upgradeApproval: Automatic
+          versions:
+  remediationAction: enforce
+---
+apiVersion: cluster.open-cluster-management.io/v1beta1
+kind: Placement
+metadata:
+  name: ebdn-install-devspace-placement
+  namespace: acm-clusterset-allcluster
+spec:
+  tolerations:
+    - key: cluster.open-cluster-management.io/unreachable
+      operator: Exists
+    - key: cluster.open-cluster-management.io/unavailable
+      operator: Exists
+  clusterSets:
+    - all-cluster
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: ebdn-install-devspace-placement
+  namespace: acm-clusterset-allcluster
+placementRef:
+  name: ebdn-install-devspace-placement
+  apiGroup: cluster.open-cluster-management.io
+  kind: Placement
+subjects:
+  - name: ebdn-install-devspace
+    apiGroup: policy.open-cluster-management.io
+    kind: Policy
