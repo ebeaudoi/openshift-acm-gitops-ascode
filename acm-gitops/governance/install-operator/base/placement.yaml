@@ -1,22 +1,13 @@
----
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
-  name: global
+  name: install-operator
   namespace: open-cluster-management-global-set
 spec:
   clusterSets:
     - global
-  decisionStrategy:
-    groupStrategy:
-      clustersPerDecisionGroup: 0
-  prioritizerPolicy:
-    mode: Additive
-  scoreRateLimit: 1m
-  sortBy: ClusterName
-  spreadPolicy: {}
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
-      operator: Equal
+      operator: Exists
     - key: cluster.open-cluster-management.io/unavailable
-      operator: Equal
+      operator: Exists

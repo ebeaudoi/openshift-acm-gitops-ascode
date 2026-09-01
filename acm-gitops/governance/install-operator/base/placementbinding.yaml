@@ -1,14 +1,13 @@
----
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
-  name: localhost-gitops-placement
+  name: install-operator
   namespace: open-cluster-management-global-set
 placementRef:
-  name: global
+  name: install-operator
   kind: Placement
   apiGroup: cluster.open-cluster-management.io
 subjects:
-  - name: localhost-gitops
+  - name: install-operator
     kind: Policy
     apiGroup: policy.open-cluster-management.io

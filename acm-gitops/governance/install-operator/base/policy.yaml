@@ -1,0 +1,58 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: install-operator
+  namespace: open-cluster-management-global-set
+  annotations:
+    policy.open-cluster-management.io/categories: CM Configuration Management
+    policy.open-cluster-management.io/standards: NIST SP 800-53
+    policy.open-cluster-management.io/controls: CM-2 Baseline Configuration
+  labels:
+    app.kubernetes.io/name: install-operator
+    app.kubernetes.io/part-of: acm-gitops
+    app.kubernetes.io/component: governance
+spec:
+  disabled: false
+  remediationAction: enforce
+  policy-templates:
+    # Ensure the operator namespace exists before OLM creates the Subscription.
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: install-operator-namespace
+        spec:
+          remediationAction: enforce
+          severity: high
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+                apiVersion: v1
+                kind: Namespace
+                metadata:
+                  name: openshift-operators
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1beta1
+        kind: OperatorPolicy
+        metadata:
+          name: install-operator
+        spec:
+          complianceType: musthave
+          remediationAction: enforce
+          severity: critical
+          # Automatic ≈ OLM installPlanApproval: Automatic for *upgrades*.
+          # Initial InstallPlan is always approved when the Policy is enforce.
+          # Do NOT set subscription.installPlanApproval — OperatorPolicy rejects it.
+          upgradeApproval: Automatic
+          # Omit targetNamespaces => AllNamespaces. Set a list for OwnNamespace.
+          operatorGroup:
+            name: install-operator
+            namespace: openshift-operators
+          subscription:
+            name: placeholder-operator
+            namespace: openshift-operators
+            channel: stable
+            source: redhat-operators
+            sourceNamespace: openshift-marketplace
+            # Optional pin: startingCSV: my-operator.v1.2.3
+            # Then also set spec.versions to the same CSV list.

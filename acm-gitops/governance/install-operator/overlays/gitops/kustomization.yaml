@@ -1,0 +1,64 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      group: policy.open-cluster-management.io
+      version: v1
+      kind: Policy
+      name: install-operator
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: install-gitops
+      - op: replace
+        path: /spec/policy-templates/0/objectDefinition/metadata/name
+        value: install-gitops-namespace
+      - op: replace
+        path: /spec/policy-templates/0/objectDefinition/spec/object-templates/0/objectDefinition/metadata/name
+        value: openshift-gitops-operator
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/metadata/name
+        value: install-gitops
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/spec/operatorGroup/name
+        value: openshift-gitops-operator
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/spec/operatorGroup/namespace
+        value: openshift-gitops-operator
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/spec/subscription/name
+        value: openshift-gitops-operator
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/spec/subscription/namespace
+        value: openshift-gitops-operator
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/spec/subscription/channel
+        value: latest
+  - target:
+      group: cluster.open-cluster-management.io
+      version: v1beta1
+      kind: Placement
+      name: install-operator
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: install-gitops
+  - target:
+      group: policy.open-cluster-management.io
+      version: v1
+      kind: PlacementBinding
+      name: install-operator
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: install-gitops
+      - op: replace
+        path: /placementRef/name
+        value: install-gitops
+      - op: replace
+        path: /subjects/0/name
+        value: install-gitops
