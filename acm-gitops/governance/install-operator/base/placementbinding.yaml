@@ -1,17 +1,3 @@
-<<<<<<< HEAD
----
-apiVersion: policy.open-cluster-management.io/v1
-kind: PlacementBinding
-metadata:
-  name: install-operator-placement-binding
-  namespace: open-cluster-management-global-set
-placementRef:
-  name: install-operator-placement
-  kind: Placement
-  apiGroup: cluster.open-cluster-management.io
-subjects:
-  - name: install-operator-policy
-=======
 apiVersion: policy.open-cluster-management.io/v1
 kind: PlacementBinding
 metadata:
@@ -23,6 +9,5 @@ placementRef:
   apiGroup: cluster.open-cluster-management.io
 subjects:
   - name: install-operator
->>>>>>> e2979865404f61019d0936b31b6180d38d2fcc59
     kind: Policy
     apiGroup: policy.open-cluster-management.io

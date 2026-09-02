@@ -1,27 +1,13 @@
-<<<<<<< HEAD
----
-apiVersion: cluster.open-cluster-management.io/v1beta1
-kind: Placement
-metadata:
-  name: install-operator-placement
-=======
 apiVersion: cluster.open-cluster-management.io/v1beta1
 kind: Placement
 metadata:
   name: install-operator
->>>>>>> e2979865404f61019d0936b31b6180d38d2fcc59
   namespace: open-cluster-management-global-set
 spec:
   clusterSets:
     - global
   tolerations:
     - key: cluster.open-cluster-management.io/unreachable
-<<<<<<< HEAD
-      operator: Equal
-    - key: cluster.open-cluster-management.io/unavailable
-      operator: Equal
-=======
       operator: Exists
     - key: cluster.open-cluster-management.io/unavailable
       operator: Exists
->>>>>>> e2979865404f61019d0936b31b6180d38d2fcc59
