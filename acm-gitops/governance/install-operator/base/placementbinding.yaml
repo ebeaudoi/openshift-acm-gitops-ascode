@@ -1,0 +1,14 @@
+---
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: install-operator-placement-binding
+  namespace: open-cluster-management-global-set
+placementRef:
+  name: install-operator-placement
+  kind: Placement
+  apiGroup: cluster.open-cluster-management.io
+subjects:
+  - name: install-operator-policy
+    kind: Policy
+    apiGroup: policy.open-cluster-management.io
