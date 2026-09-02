@@ -11,6 +11,7 @@ Hub objects are namespaced in `open-cluster-management-global-set` and placed on
 
 ## Layout
 
+
 ```
 acm-gitops/governance/install-operator/
   base/                         # generic skeleton — do not apply directly
