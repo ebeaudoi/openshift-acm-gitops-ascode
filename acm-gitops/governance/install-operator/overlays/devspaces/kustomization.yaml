@@ -1,0 +1,64 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+patches:
+  - target:
+      group: policy.open-cluster-management.io
+      version: v1
+      kind: Policy
+      name: install-operator
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: install-devspaces
+      - op: replace
+        path: /spec/policy-templates/0/objectDefinition/metadata/name
+        value: install-devspaces-namespace
+      - op: replace
+        path: /spec/policy-templates/0/objectDefinition/spec/object-templates/0/objectDefinition/metadata/name
+        value: openshift-devspaces
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/metadata/name
+        value: install-devspaces
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/spec/operatorGroup/name
+        value: openshift-devspaces
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/spec/operatorGroup/namespace
+        value: openshift-devspaces
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/spec/subscription/name
+        value: devspaces
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/spec/subscription/namespace
+        value: openshift-devspaces
+      - op: replace
+        path: /spec/policy-templates/1/objectDefinition/spec/subscription/channel
+        value: stable
+  - target:
+      group: cluster.open-cluster-management.io
+      version: v1beta1
+      kind: Placement
+      name: install-operator
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: install-devspaces
+  - target:
+      group: policy.open-cluster-management.io
+      version: v1
+      kind: PlacementBinding
+      name: install-operator
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: install-devspaces
+      - op: replace
+        path: /placementRef/name
+        value: install-devspaces
+      - op: replace
+        path: /subjects/0/name
+        value: install-devspaces

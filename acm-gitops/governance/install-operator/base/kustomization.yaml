@@ -2,6 +2,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+<<<<<<< HEAD
   - install-operator.yaml
+=======
+  - policy.yaml
+>>>>>>> e2979865404f61019d0936b31b6180d38d2fcc59
   - placement.yaml
   - placementbinding.yaml
