@@ -1,3 +1,5 @@
+# OpenShift GitOps operator — copy this folder to create another operator overlay.
+# Change only the `value` fields below; keep paths and targets unchanged.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
@@ -5,60 +7,88 @@ resources:
   - ../../base
 
 patches:
+  # --- Policy (ACM governance policy resource) ---
   - target:
       group: policy.open-cluster-management.io
       version: v1
       kind: Policy
       name: install-operator
     patch: |-
+      # ACM Policy name in the hub namespace (must match PlacementBinding subjects[0].name).
       - op: replace
         path: /metadata/name
         value: install-gitops
+
+      # ConfigurationPolicy template name (policy-templates[0]); label for the namespace rule.
       - op: replace
         path: /spec/policy-templates/0/objectDefinition/metadata/name
         value: install-gitops-namespace
+
+      # Kubernetes Namespace to create on managed clusters before the operator is installed.
       - op: replace
         path: /spec/policy-templates/0/objectDefinition/spec/object-templates/0/objectDefinition/metadata/name
         value: openshift-gitops-operator
+
+      # OperatorPolicy template name (policy-templates[1]); label for the operator install rule.
       - op: replace
         path: /spec/policy-templates/1/objectDefinition/metadata/name
         value: install-gitops
+
+      # OLM OperatorGroup name; pairs with the subscription on managed clusters.
       - op: replace
         path: /spec/policy-templates/1/objectDefinition/spec/operatorGroup/name
         value: openshift-gitops-operator
+
+      # Namespace where the OperatorGroup is created (usually same as the operator namespace).
       - op: replace
         path: /spec/policy-templates/1/objectDefinition/spec/operatorGroup/namespace
         value: openshift-gitops-operator
+
+      # OLM Subscription package name (operator name in the catalog).
       - op: replace
         path: /spec/policy-templates/1/objectDefinition/spec/subscription/name
         value: openshift-gitops-operator
+
+      # Namespace for the OLM Subscription (where OLM installs the operator).
       - op: replace
         path: /spec/policy-templates/1/objectDefinition/spec/subscription/namespace
         value: openshift-gitops-operator
+
+      # OLM update channel (e.g. stable, latest); must exist for this operator in the catalog.
       - op: replace
         path: /spec/policy-templates/1/objectDefinition/spec/subscription/channel
         value: latest
+
+  # --- Placement (which managed clusters receive this policy) ---
   - target:
       group: cluster.open-cluster-management.io
       version: v1beta1
       kind: Placement
       name: install-operator
     patch: |-
+      # Placement name (must match PlacementBinding placementRef.name).
       - op: replace
         path: /metadata/name
         value: install-gitops
+
+  # --- PlacementBinding (links Policy to Placement) ---
   - target:
       group: policy.open-cluster-management.io
       version: v1
       kind: PlacementBinding
       name: install-operator
     patch: |-
+      # PlacementBinding resource name on the hub.
       - op: replace
         path: /metadata/name
         value: install-gitops
+
+      # Placement to use (must match Placement metadata.name above).
       - op: replace
         path: /placementRef/name
         value: install-gitops
+
+      # Policy to bind (must match Policy metadata.name above).
       - op: replace
         path: /subjects/0/name
         value: install-gitops
